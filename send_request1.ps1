@@ -1,0 +1,1 @@
+﻿iwr -Method Post -Uri http://localhost:7071/api/HttpTriggerPurchase -Body '{ "OrderId":"125", "Email": "mark@test.com", "ProductId":"X101" }' -Headers @{"Content-Type"="application/json"}
