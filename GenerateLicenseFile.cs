@@ -23,6 +23,7 @@ namespace OnDemandPurchase
             var md5 = System.Security.Cryptography.MD5.Create();
             var hash = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(order.Email + "secret"));
             outputBlob.WriteLine($"SecretCode: {BitConverter.ToString(hash).Replace("-", "")}");
+            //git test
         }
     }
 }
