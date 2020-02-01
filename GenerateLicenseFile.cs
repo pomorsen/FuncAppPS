@@ -9,12 +9,19 @@ namespace OnDemandPurchase
     public static class GenerateLicenseFile
     {
         [FunctionName("GenerateLicenseFile")]
-        public static void Run(
-            [QueueTrigger("orders", Connection = "AzureWebJobsStorage")]Order order, 
-            [Blob("licenses/{rand-guid}.lic")] TextWriter outputBlob,
+        public static async System.Threading.Tasks.Task RunAsync(
+            [QueueTrigger("orders", Connection = "AzureWebJobsStorage")]Order order,
+            IBinder binder,
             ILogger log
             )
         {
+
+            var outputBlob = await binder.BindAsync<TextWriter>(
+                new BlobAttribute($"licenses/{order.OrderId}.lic")
+                {
+                    Connection = "AzureWebJobsStorage"
+            });
+
             outputBlob.WriteLine($"OrderId:  {order.OrderId}");
             outputBlob.WriteLine($"Email:  {order.Email}");
             outputBlob.WriteLine($"ProductId:  {order.ProductId}");
@@ -23,7 +30,7 @@ namespace OnDemandPurchase
             var md5 = System.Security.Cryptography.MD5.Create();
             var hash = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(order.Email + "secret"));
             outputBlob.WriteLine($"SecretCode: {BitConverter.ToString(hash).Replace("-", "")}");
-            //git test
+
         }
     }
 }
